@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>104_job</title>
+    <link rel="stylesheet" href="./static/datatable.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class = "logo">
+                        <img src="./static/pic/logo.jpg">
+                        <span class="nva-item">Dashboard</span>
+                </a></li>
+                <li><a href="{{ url_for('wordcloud') }}">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="nav-item">Dashboard</span>
+                </a></li>
+
+                <li><a href="{{ url_for('job104') }}">
+                    <i class="fas fa-table"></i>
+                    <span class="nav-item" >104</span>
+                </a></li>
+                <li><a href="{{ url_for('job1111') }}">
+                    <i class="fas fa-table"></i>
+                    <span class="nav-item">1111</span>
+                </a></li>
+                <li><a href="#" class="logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-item">Log out</span>
+                  </a></li>
+            </ul>
+        </nav>
+
+        <section class="main">
+            <div class="main-top">
+                <h1>Job Description</h1>
+                <div class="nav-buttons">
+                    <form method="post" action="{{ url_for('navigate1111') }}">
+                        <input type="hidden" name="current_index" value="{{ current_index }}">
+                        <button type="submit" name="direction" value="prev" class="btn btn-secondary">Prev</button>
+                    </form>
+                    
+                </div>
+                <div class="nav-buttons">
+                    <form method="post" action="{{ url_for('navigate1111') }}">
+                        <input type="hidden" name="current_index" value="{{ current_index }}">
+                        <button type="submit" name="direction" value="next" class="btn btn-secondary">Next</button>
+                    </form>
+                    
+                </div>
+            </div>
+            
+            <div class="users">
+                <div class="card">
+                    <h4> </h4>
+                    <div class="chart">
+                        <u class="jobcontent">
+                            {% set chinese_dict = {'company':'公司名稱','custUrl':'公司網址','jobCategory':'職務類別','addressArea':'地址','businessTrip':'出差外派','jobType':'工作性質',
+                            'vacationPolicy':'休假制度','needEmp':'需求人數','edu':'學歷','title':'職稱','appearDate':'更新日期','salary':'薪資',
+                            'manageResp':'管理責任','workPeriod':'工作時間','startWorkingDay':'到職日期','workExp':'工作經驗','major':'科系限制','skill':'工作技能','specialty':'擅長工具','jobDescription':'工作內容','other':'其他'} %}
+                            {% for key, value in data.items() %}
+                                {% if key in ['company','custUrl','jobCategory','addressArea','jobType','vacationPolicy','needEmp','edu','title','appearDate','salary','workPeriod','startWorkingDay','workExp','major'] %}
+                                    <li><strong>{{ chinese_dict[key] }} : </strong> {{ value }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </u>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4> </h4>
+                    <div class="chart">
+                        <u class="jobcontent">
+                            {% for key, value in data.items() %}
+                                {% if key in ['skill','specialty','jobDescription','other'] %}
+                                    <li><strong>{{ chinese_dict[key] }} : </strong> {{ value }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </u>
+                    </div>
+                    
+                </div>
+
+                
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

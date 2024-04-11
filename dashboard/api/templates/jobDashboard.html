@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>Document</title>
+    <link rel="stylesheet" href="./static/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
+	<script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-tag-cloud.min.js"></script>
+    <script> src="https://cdn.anychart.com/releases/8.11.0/js/anychart-exports.min.js"</script>
+    <script> src="https://cdn.anychart.com/releases/8.11.0/js/anychart-ui.min.js"</script>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class = "logo">
+                        <img src="./static/pic/logo.jpg">
+                        <span class="nva-item">Dashboard</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="nav-item">Dashboard</span>
+                </a></li>
+
+                <li><a href="{{ url_for('job104') }}">
+                    <i class="fas fa-table"></i>
+                    <span class="nav-item">104</span>
+                </a></li>
+
+                <li><a href="{{ url_for('job1111') }}">
+                    <i class="fas fa-table"></i>
+                    <span class="nav-item">1111</span>
+                </a></li>
+                <li><a href="#" class="logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-item">Log out</span>
+                  </a></li>
+            </ul>
+        </nav>
+
+        <section class="main">
+            <div class="main-top">
+                <h1>Analysis</h1>
+            </div>
+            <div class="users">
+                <div class="card">
+                    <h4>Work Location</h4>
+                    <div class="chart">
+                        <canvas id="pieChart"></canvas>
+                        <script>
+                            let colName_data = JSON.parse({{ loc_column | tojson }})
+                            let colValue_data = JSON.parse({{ loc_value | tojson}})
+                            var pie_data = {
+                            labels: colName_data,
+                            datasets: [{
+                                data: colValue_data,
+                                backgroundColor: ['red', 'green', 'blue', 'yellow'],
+                            }]
+                        };
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var ctx = document.getElementById('pieChart').getContext('2d');
+                                var myPieChart = new Chart(ctx, {
+                                    type: 'pie',
+                                    data: pie_data,
+                                    options: {
+                                        layout:{
+                                            padding:{
+                                                top: 30
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Work Experience</h4>
+                    <div class="chart">
+                        <canvas id="barChart"></canvas>
+                        <script>
+                            let exp_column = JSON.parse({{ exp_column | tojson }})
+                            let exp_values = JSON.parse({{ exp_values | tojson}})
+                            var barBackgroundColors = generateRandomColors(exp_column.length)
+                            var bar_data = {
+                                labels: exp_column,
+                                datasets: [{
+                                    data: exp_values,
+                                    backgroundColor: barBackgroundColors
+                                }]
+                            }
+                            
+                            // JavaScript code to generate bar chart using Chart.js
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var ctx = document.getElementById('barChart').getContext('2d');
+                                var myBarChart = new Chart(ctx, {
+                                    type: 'bar',
+                                    data: bar_data,
+                                    options: {
+                                        layout:{
+                                            padding:{
+                                                top: 30
+                                            }
+                                        },
+                                        legend: {
+                                            display: false
+                                        }
+                                    }
+                                });
+                            });
+
+                            function generateRandomColors(count) {
+                                var colors = [];
+                                for (var i = 0; i < count; i++) {
+                                    var randomColor = '#' + Math.floor(Math.random()*16777215).toString(16); // 生成隨機的十六進制顏色碼
+                                    colors.push(randomColor);
+                                }
+                                return colors;
+                            }
+                        </script>
+                    </div>
+                    
+                </div>
+
+                <div class="card">
+                    <h4>Job Updating</h4>
+                    <div class="chart">
+                        <canvas id="lineChart"></canvas>
+                        <script>
+                            let update_column = JSON.parse({{update_column | tojson}})
+                            let update_values = JSON.parse({{update_values | tojson}})
+                            var line_data = {
+                                labels: update_column,
+                                datasets:[{
+                                    data: update_values,
+                                    borderColor: '#36A2EB',
+                                    fill: false
+                                }]
+                            }
+                            // JavaScript code to generate line chart using Chart.js
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var ctx = document.getElementById('lineChart').getContext('2d');
+                                var myLineChart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: line_data,
+                                    options: {
+                                        layout:{
+                                            padding:{
+                                                top: 30
+                                            }
+                                        },
+                                        legend: {
+                                            display: false
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+                
+            </div>
+
+            <section class="attendance">
+                <div class="attendance-list">
+                    <h1>Word Cloud</h1>
+                    <div id="wordcloud"></div>
+                </div>
+                <script>
+                    anychart.onDocumentReady(function(){
+                        var data = getData();
+                    // create a tag (word) cloud chart
+                        var chart=anychart.tagCloud(data);
+                    // Set height bound
+                    chart.height('100%');
+                    // Set width bound
+                    chart.width('100%');
+                
+                    // display the word cloud chart
+                    chart.container('wordcloud');
+                    chart.draw();
+                        });
+                        
+                    function getData() {
+                        return {{ wordcloud | tojson | safe }};
+                    }
+                </script>
+
+            </section>
+        </section>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
